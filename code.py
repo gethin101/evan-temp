@@ -9,11 +9,11 @@ from adafruit_hid.keycode import Keycode
 from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
-# Assign keyboard and consumer control
+
 kbd = Keyboard(usb_hid.devices)
 cc = ConsumerControl(usb_hid.devices)
 
-# Order the pins
+
 key_pins = {
     "1": board.A2,
     "2": board.A3,
@@ -28,7 +28,7 @@ key_pins = {
     "9": board.MOSI,
 }
 
-# Actions for each key
+
 actions = {
     "1": ("media", ConsumerControlCode.SCAN_PREVIOUS_TRACK),   # Back song
     "2": ("media", ConsumerControlCode.PLAY_PAUSE),            # Play/Pause
@@ -43,7 +43,7 @@ actions = {
     "9": ("media", ConsumerControlCode.SCAN_NEXT_TRACK),
 }
 
-# Setup buttons
+
 buttons = {}
 for key, pin in key_pins.items():
     btn = digitalio.DigitalInOut(pin)
@@ -51,24 +51,24 @@ for key, pin in key_pins.items():
     btn.pull = digitalio.Pull.UP
     buttons[key] = btn
 
-# Toggle state for key 6
+
 snip_mode = False
 
-# Main loop
+
 last_pressed = set()
 
 while True:
     pressed = set()
 
-    # Read all buttons
+
     for key, btn in buttons.items():
         if not btn.value:
             pressed.add(key)
 
-    # Detect new presses
+
     new_keys = pressed - last_pressed
 
-    # Handle one-shot actions
+
     for key in new_keys:
         if key in actions:
             action_type, value = actions[key]
@@ -83,13 +83,13 @@ while True:
                 snip_mode = not snip_mode
 
                 if snip_mode:
-                    # Win + Shift + S
+               
                     kbd.send(Keycode.WINDOWS, Keycode.SHIFT, Keycode.S)
                 else:
-                    # ESC
+                 
                     kbd.send(Keycode.ESCAPE)
 
-    # Handle hold actions (volume)
+ 
     for key in pressed:
         if key in actions:
             action_type, value = actions[key]
